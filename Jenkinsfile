@@ -19,7 +19,7 @@ pipeline {
 
         stage('SonarQube analyize') {
             steps {
-                withSonarQubeEnv('sonar') {
+                withSonarQubeEnv('sonarWeilin') {
                     withMaven {
                         sh './mvnw sonar:sonar'
                     }
