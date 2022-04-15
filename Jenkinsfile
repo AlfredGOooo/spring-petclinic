@@ -1,7 +1,18 @@
 pipeline {
     agent any
     stages{
-        stage('clean up') {
+        tools {
+            maven "maven-3"
+        }
+        
+        stage('Local Download') {
+            steps {
+                git url: 'https://github.com/AlfredGOooo/spring-petclinic.git', branch: 'main',
+                 credentialsId: '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'
+            }
+        }
+        
+        stage('Clean Up') {
             steps {
                 withMaven {
                     sh './mvnw clean'
@@ -9,28 +20,26 @@ pipeline {
             }
         }
 
-        stage('compile project') {
+        stage('Compile Project') {
             steps {
                 withMaven {
                     sh './mvnw install'
                 }
             }
         }
-
-        stage('Copy Archive') {
+        
+        stage('Ansible Step') {
             steps {
-                copyArtifacts filter: 'target/*.jar', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER), target: '/vagrant'
+                sh 'ansible-playbook /vagrant/deploy-jar.yml'
             }
         }
     }
     post{
         success{
-            archiveArtifacts 'target/*.jar'
+            echo "Build Success"
         }
         failure{
-            echo '=========================='
-            echo 'Build fail!!!!!!!!!!!!!!!!'
-            echo '=========================='
+            echo "Build Failed"
         }
     }
 }
