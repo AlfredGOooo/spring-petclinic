@@ -18,13 +18,8 @@ pipeline {
         }
 
         stage('Copy Archive') {
-             steps {
-                 script {
-                    step ([$class: 'CopyArtifact',
-                        projectName: 'spring-petclinic',
-                        filter: "target/*.jar",
-                        target: '/vagrant']);
-                }
+            steps {
+                copyArtifacts filter: 'target/*.jar', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER), target: '/vagrant'
             }
         }
     }
