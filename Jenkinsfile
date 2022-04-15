@@ -8,7 +8,6 @@ pipeline {
         stage('Local Download') {
             steps {
                 git url: 'https://github.com/AlfredGOooo/spring-petclinic.git', branch: 'main',
-                 credentialsId: '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'
             }
         }
         
