@@ -17,12 +17,13 @@ pipeline {
             }
         }
 
-        stage('SonarQube analyize') {
-            steps {
-                withSonarQubeEnv('sonarWeilin') {
-                    withMaven {
-                        sh './mvnw sonar:sonar'
-                    }
+        stage('Copy Archive') {
+             steps {
+                 script {
+                    step ([$class: 'CopyArtifact',
+                        projectName: 'spring-petclinic',
+                        filter: "target/*.jar",
+                        target: '/vagrant']);
                 }
             }
         }
